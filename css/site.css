@@ -20,7 +20,9 @@ a:focus-visible{outline:1px solid var(--oak);outline-offset:4px}
 
 /* ---- header ---- */
 header{display:flex;justify-content:space-between;align-items:center;padding:26px clamp(18px,4vw,48px)}
-.logo{font-family:var(--latin);font-weight:500;font-size:17px;letter-spacing:.22em;color:var(--ink)}
+.logo img{display:block;height:44px;width:auto}
+@media (max-width:560px){.logo img{height:34px}}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--latin);font-weight:500;font-size:17px;letter-spacing:.22em;color:var(--ink)}
 nav{display:flex;gap:clamp(16px,2.6vw,34px);font-family:var(--latin);font-weight:300;font-size:12.5px;letter-spacing:.22em;color:var(--ink)}
 nav a{display:inline-block;opacity:.85;transform-origin:50% 60%;transition:transform .35s cubic-bezier(.2,.7,.2,1),text-shadow .35s ease,opacity .35s ease,color .35s ease}
 
@@ -152,7 +154,8 @@ nav a.ct{letter-spacing:.14em;margin-right:-.08em;position:relative}
 
 /* ---- footer ---- */
 footer{background:#2b2a28;color:#77726a;padding:20px clamp(18px,4vw,48px) 22px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
-.flogo{font-family:var(--latin);font-weight:300;font-size:14px;letter-spacing:.3em;color:#8a7350}
+.flogo img{height:32px;width:auto;opacity:.85}
+.flogo{display:flex;align-items:center;gap:10px;font-family:var(--latin);font-weight:300;font-size:14px;letter-spacing:.3em;color:#8a7350}
 .fr{text-align:right;display:grid;gap:4px}
 .fr span{font-family:var(--latin);font-size:10.5px;letter-spacing:.14em}
 .fr small{font-size:9px;letter-spacing:.08em;color:#5e5a54;line-height:1.6}

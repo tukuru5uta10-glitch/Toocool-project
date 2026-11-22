@@ -27,7 +27,9 @@ a{color:inherit;text-decoration:none}
 a:focus-visible{outline:1px solid var(--oak);outline-offset:4px}
 
 header{position:absolute;top:0;left:0;right:0;z-index:3;display:flex;justify-content:space-between;align-items:center;padding:26px clamp(18px,4vw,48px)}
-.logo{font-family:var(--latin);font-weight:500;font-size:17px;letter-spacing:.22em;color:#fff;text-shadow:0 1px 12px rgba(0,0,0,.25)}
+.logo img{display:block;height:54px;width:auto;filter:drop-shadow(0 1px 8px rgba(0,0,0,.35))}
+@media (max-width:560px){.logo img{height:40px}}
+.logo{display:flex;align-items:center;gap:12px;font-family:var(--latin);font-weight:500;font-size:17px;letter-spacing:.22em;color:#fff;text-shadow:0 1px 12px rgba(0,0,0,.25)}
 nav{display:flex;gap:clamp(16px,2.6vw,34px);font-family:var(--latin);font-weight:300;font-size:12.5px;letter-spacing:.22em;color:#fff;text-shadow:0 1px 12px rgba(0,0,0,.25)}
 nav a{display:inline-block;opacity:.92;transform-origin:50% 60%;text-shadow:0 1px 12px rgba(0,0,0,.25);transition:transform .35s cubic-bezier(.2,.7,.2,1),text-shadow .35s ease,opacity .35s ease}
 
@@ -69,7 +71,8 @@ nav a.rf{letter-spacing:.17em;margin-right:-.05em}
 @media (prefers-reduced-motion:reduce){.svc a{transition:none}}
 
 footer{background:#2b2a28;color:#77726a;padding:20px clamp(18px,4vw,48px) 22px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
-.flogo{font-family:var(--latin);font-weight:300;font-size:14px;letter-spacing:.3em;color:#8a7350}
+.flogo img{height:32px;width:auto;opacity:.85}
+.flogo{display:flex;align-items:center;gap:10px;font-family:var(--latin);font-weight:300;font-size:14px;letter-spacing:.3em;color:#8a7350}
 .fr{text-align:right;display:grid;gap:4px}
 .fr span{font-family:var(--latin);font-size:10.5px;letter-spacing:.14em}
 .fr small{font-size:9px;letter-spacing:.08em;color:#5e5a54;line-height:1.6}
@@ -84,7 +87,7 @@ footer{background:#2b2a28;color:#77726a;padding:20px clamp(18px,4vw,48px) 22px;d
 </head>
 <body>
 <header>
-  <a class="logo" href="index.html">29/6_DESIGN</a>
+  <a class="logo" href="index.html"><img src="img/logo-white.png" alt="" width="76" height="54"><span>29/6_DESIGN</span></a>
   <nav aria-label="メニュー">
     <a class="rf" href="reform.html">REFORM</a>
     <a href="app.html">APP</a>
@@ -101,7 +104,7 @@ footer{background:#2b2a28;color:#77726a;padding:20px clamp(18px,4vw,48px) 22px;d
   <p class="lead">29/6_DESIGN は、住まいのリフォームと、<br>つくり手の仕事を支えるアプリやホームページをつくっています。</p>
 </div>
 <footer>
-  <span class="flogo">29/6_DESIGN</span>
+  <span class="flogo"><img src="img/logo-white.png" alt="" width="45" height="32">29/6_DESIGN</span>
   <div class="fr">
     <span>© 2025 29/6_DESIGN. All rights reserved.</span>
     <small>対応エリア：堺市（堺区・北区・西区・中区・東区・美原区・南区）和泉市・高石市・大阪狭山市・河内長野市・松原市・羽曳野市・富田林市ほか大阪全域</small>
