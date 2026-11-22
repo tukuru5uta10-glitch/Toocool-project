@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>新規入場者調査票 かんたん入力（デモ）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{--ink:#1d2433;--sub:#5b6475;--line:#d9dde5;--bg:#f4f5f7;--acc:#c8102e;--acc2:#fbe9ec;--ok:#1f7a4d}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP',system-ui,sans-serif;-webkit-text-size-adjust:100%}
+header.app{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--line);padding:10px 16px 8px}
+header.app{position:sticky}header.app h1{padding-right:120px;font-size:16px;margin:0 0 2px;font-weight:700}
+header.app .site{font-size:12px;color:var(--sub)}
+.steps{display:flex;gap:4px;margin-top:8px}
+.steps i{flex:1;height:5px;border-radius:3px;background:var(--line)}
+.steps i.on{background:var(--acc)}
+.steps i.done{background:#e98a99}
+main{max-width:640px;margin:0 auto;padding:14px 14px 110px}
+h2{font-size:19px;margin:6px 0 4px}
+.lead{font-size:13px;color:var(--sub);margin:0 0 14px;line-height:1.6}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+.f{margin-bottom:14px}
+.f:last-child{margin-bottom:0}
+.f>label,.f>.lb{display:block;font-size:14px;font-weight:700;margin-bottom:6px}
+.f .hint{font-size:12px;color:var(--sub);font-weight:400;margin-left:4px}
+input[type=text],input[type=tel],input[type=date],input[type=month],input[type=number],select{width:100%;font-size:17px;padding:11px 12px;border:1px solid #c5cad4;border-radius:9px;background:#fff;color:var(--ink);font-family:inherit;min-height:48px}
+input:focus,select:focus{outline:2px solid var(--acc);border-color:var(--acc)}
+.row{display:flex;gap:8px;align-items:center}
+.row>*{flex:1;min-width:0}
+.row .u{flex:0 0 auto;font-size:15px;color:var(--sub)}
+.ch{display:flex;flex-wrap:wrap;gap:8px}
+.ch button{flex:1 1 auto;min-width:88px;font-size:16px;padding:12px 10px;border:1.5px solid #c5cad4;background:#fff;border-radius:10px;color:var(--ink);font-family:inherit;min-height:48px}
+.ch button.sel{border-color:var(--acc);background:var(--acc2);color:var(--acc);font-weight:700}
+.chk{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.chk label{display:flex;align-items:center;gap:8px;border:1.5px solid #c5cad4;border-radius:10px;padding:10px;font-size:14px;background:#fff;min-height:46px;line-height:1.3}
+.chk label.sel{border-color:var(--acc);background:var(--acc2);color:var(--acc);font-weight:700}
+.chk input{width:20px;height:20px;accent-color:var(--acc);flex:0 0 auto}
+.grp{font-size:13px;font-weight:700;color:var(--sub);margin:14px 0 8px;padding-bottom:4px;border-bottom:1px dashed var(--line)}
+.grp:first-child{margin-top:0}
+nav.bot{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom));display:flex;gap:10px;z-index:6}
+nav.bot button{flex:1;font-size:17px;font-weight:700;padding:14px;border-radius:12px;border:0;font-family:inherit}
+.bk{background:#eceef2;color:var(--ink)}
+.nx{background:var(--acc);color:#fff}
+.btn{display:block;width:100%;font-size:17px;font-weight:700;padding:15px;border-radius:12px;border:0;background:var(--acc);color:#fff;font-family:inherit;margin-bottom:10px}
+.btn.sec{background:#fff;color:var(--acc);border:1.5px solid var(--acc)}
+.btn.ghost{background:none;color:var(--sub);font-weight:400;font-size:14px;border:0;text-decoration:underline;padding:8px}
+.btn:disabled{opacity:.5}
+.note{font-size:12.5px;color:var(--sub);line-height:1.6}
+.warn{background:#fff7e6;border:1px solid #f0c36d;border-radius:10px;padding:10px 12px;font-size:13.5px;line-height:1.6;margin-bottom:12px}
+.okmsg{background:#eaf6ef;border:1px solid #9bd0b2;color:var(--ok);border-radius:10px;padding:10px 12px;font-size:14px;margin-bottom:12px}
+.errmsg{background:#fdecee;border:1px solid #f1a7b2;color:var(--acc);border-radius:10px;padding:10px 12px;font-size:14px;margin-bottom:12px}
+.pvwrap{background:#e3e6eb;border-radius:10px;padding:8px;overflow:hidden;margin-bottom:12px}
+.pvin{transform-origin:0 0}
+#outimg{width:100%;border:1px solid var(--line);border-radius:6px;margin-top:6px;display:none}
+#cap{position:absolute;left:-12000px;top:0}
+.hide{display:none!important}
+
+/* ===== 調査票（A4） ===== */
+.sheet{width:794px;min-height:1123px;background:#fff;color:#000;padding:26px 34px 22px;font-family:'Noto Sans JP',sans-serif;font-size:11.5px;line-height:1.25;position:relative}
+.sheet table{width:100%;border-collapse:collapse;table-layout:fixed}
+.sheet td{border:1px solid #000;padding:2px 4px;height:22px;vertical-align:middle;overflow:hidden;white-space:nowrap}
+.sheet .nb td{border:0}
+.sheet .thick{border:2px solid #000}
+.sheet .ttl{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:8px}
+.sheet .ttl .t1{font-size:17px;font-weight:700;border-bottom:1.5px solid #000;padding-bottom:1px}
+.sheet .ttl .t2{font-size:19px;font-weight:700;border-bottom:1.5px solid #000;margin-left:200px}
+.sheet .v{font-size:12.5px}
+.sheet .big{font-size:15px;letter-spacing:2px}
+.sheet .sm{font-size:9px}
+.sheet .c{text-align:center}
+.sheet .r{text-align:right}
+.sheet .b{font-weight:700}
+.sheet .sec{margin:5px 0 1px 10px;font-size:11.5px}
+.sheet .gap{height:7px}
+.sheet .m{display:inline-block;border:1.5px solid #000;border-radius:50%;padding:0 4px;margin:0 -2px;line-height:1.15}
+.sheet .q td{height:19px}
+.sheet .sk td{height:19px}
+.sheet .sk td.ln{letter-spacing:.5px;font-size:11px}
+.sheet .vlab{text-align:center;font-size:11px;line-height:1.35;white-space:normal}
+.sheet .wrap{white-space:normal}
+.sheet .dash{border:1.5px dashed #000;padding:6px 10px 8px;margin-top:6px}
+.sheet .red{color:#d00000;font-weight:700;line-height:1.55}
+.sheet .sign{display:flex;justify-content:space-between;margin-top:8px;padding:0 20px}
+.sheet .sign .ul{display:inline-block;border-bottom:1px solid #000;min-width:210px;margin-left:8px}
+.sheet .kyoiku{font-size:11px;line-height:1.55;border:1.5px solid #000;padding:3px 6px;letter-spacing:.3px}
+.sheet .foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:10px}
+.sheet .stamp td{height:56px;width:66px}
+.sheet .stamp tr:first-child td{height:18px;font-size:10.5px;text-align:center}
+.sheet .blank{display:inline-block;min-width:22px;text-align:center}
+</style>
+</head>
+<body>
+<header class="app">
+  <h1>新規入場者調査票 かんたん入力 <span style="font-size:11px;color:#c8102e;border:1px solid #c8102e;border-radius:4px;padding:1px 5px;vertical-align:2px">デモ</span></h1><a href="app.html" style="position:absolute;right:14px;top:12px;font-size:12px;color:#5b6475">← アプリの紹介へ</a>
+  <div class="site" id="hdrSite"></div>
+  <div class="steps" id="stepbar"></div>
+</header>
+<main id="main"></main>
+<nav class="bot" id="nav">
+  <button class="bk" id="btnBack">戻る</button>
+  <button class="nx" id="btnNext">次へ</button>
+</nav>
+<div id="cap"></div>
+
+<script>
+(function(){
+'use strict';
+const KEY='demo296_nyujo_v1';
+const DEF={site:'(デモ) ○○ビル改修工事',educator:'サンプル建設株式会社　工事主任　山田 一郎',shikaku:[],kio_items:[],sign_same:true};
+let S={};
+try{S=Object.assign({},DEF,JSON.parse(localStorage.getItem(KEY)||'{}'));}catch(e){S=Object.assign({},DEF);}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+let step=0;
+
+/* ---------- 和暦など ---------- */
+function era(y,m,d){
+  const n=y*10000+(m||1)*100+(d||1);
+  if(n>=20190501)return{n:'令和',s:'R',y:y-2018};
+  if(n>=19890108)return{n:'平成',s:'H',y:y-1988};
+  if(n>=19261225)return{n:'昭和',s:'S',y:y-1925};
+  return{n:'大正',s:'T',y:y-1911};
+}
+function pd(s){if(!s)return null;const a=s.split('-').map(Number);return{y:a[0],m:a[1],d:a[2]||null};}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function sp(s,w){return '<span class="blank" style="min-width:'+(w||22)+'px">'+esc(s||'')+'</span>';}
+function refDate(){return pd(S.nyujo_date)||pd(S.okuri_date)||(function(){const t=new Date();return{y:t.getFullYear(),m:t.getMonth()+1,d:t.getDate()};})();}
+function age(){
+  if(!S.birth_y||!S.birth_m||!S.birth_d)return '';
+  const r=refDate();let a=r.y-S.birth_y;
+  if(r.m<S.birth_m||(r.m===S.birth_m&&r.d<S.birth_d))a--;
+  return a;
+}
+
+/* ---------- 選択肢定義 ---------- */
+const SHIKAKU=[
+ {g:'免許',lines:[[['m_crane','ｸﾚｰﾝ'],'・',['m_mcrane','移ｸﾚｰﾝ'],'・車（',['m_futsu','普'],'、',['m_ogata','大型'],'）・',['m_gas','ガス溶接'],'・',['m_shokucho','職長教育']]]},
+ {g:'技能講習',lines:[
+  [['g_jiyama','地山'],'・',['g_dodome','土止'],'・',['g_katawaku','型枠'],'・',['g_ashiba','足場'],'・',['g_tekkotsu','鉄骨'],'・',['g_tamakake','玉掛(1t以上)'],'・',['g_sanketsu','酸欠'],'・',['g_gas','ガス溶接'],'・',['g_kosho','高所車(10m以上)']],
+  [['g_crane','ｸﾚｰﾝ（床上5t以上、移5t未満1t以上）'],'・',['g_yuki','有機溶剤'],'・',['g_conha','コン破砕器'],'・',['g_zuido','ずい道（掘削、覆工）']],
+  [['g_conkai','コン解体破壊'],'・',['g_tokka','特定化学'],'・',['g_hai','はい作業'],'・',['g_sharyo3','車両系3t以上（建機、解体、基礎工事用）']],
+  [['g_sharyo1','車両系1t以上（荷役、不整地運搬）'],'・',['g_saiseki','採石']]]},
+ {g:'特別教育',lines:[
+  [['t_crane','ｸﾚｰﾝ(床上5t未満、移1t未満)'],'・',['t_kosho','高所車(10m未満)'],'・',['t_konai','坑内作業'],'・',['t_kido','軌道'],'・',['t_funjin','粉じん'],'・',['t_arc','アーク'],'・',['t_toishi','といし']],
+  [['t_sanketsu','酸欠'],'・',['t_koatsu','高圧室'],'・',['t_denki','電気取扱'],'・',['t_lift','リフト'],'・',['t_gondora','ゴンドラ'],'・',['t_sensui','潜水'],'・',['t_makiage','巻上げ機'],'・',['t_boring','ボーリングマシン']],
+  [['t_sharyo3','車両系3t未満（建機、解体、基礎工事用）'],'・',['t_sharyo1','車両系1t未満(荷役、不整地運搬）']],
+  [['t_concrete','車両系（ｺﾝｸﾘｰﾄ打設用、締固）']]]}
+];
+const KIO1=['じん肺症','慢性腰痛','ぎっくり腰','ﾑﾁｳﾁ症'],KIO2=['振動病','有機溶剤中毒症','難聴','その他'];
+const HOURS=[];for(let h=6;h<=21;h++)HOURS.push(String(h));
+
+/* ---------- 入力部品 ---------- */
+function txt(k,label,o){o=o||{};return '<div class="f"><label for="i_'+k+'">'+label+(o.hint?'<span class="hint">'+o.hint+'</span>':'')+'</label><input id="i_'+k+'" data-k="'+k+'" type="'+(o.type||'text')+'" '+(o.im?'inputmode="'+o.im+'"':'')+' placeholder="'+esc(o.ph||'')+'" value="'+esc(S[k]||'')+'" autocomplete="off"></div>';}
+function selRaw(k,opts,ph){return '<select data-k="'+k+'"><option value="">'+(ph||'選択')+'</option>'+opts.map(o=>{const v=Array.isArray(o)?o[0]:o,l=Array.isArray(o)?o[1]:o;return '<option value="'+esc(v)+'"'+(String(S[k]||'')===String(v)?' selected':'')+'>'+esc(l)+'</option>';}).join('')+'</select>';}
+function ch(k,label,opts,o){o=o||{};return '<div class="f"><div class="lb">'+label+(o.hint?'<span class="hint">'+o.hint+'</span>':'')+'</div><div class="ch">'+opts.map(v=>'<button type="button" data-ch="'+k+'" data-v="'+esc(v)+'" class="'+(S[k]===v?'sel':'')+'">'+esc(v)+'</button>').join('')+'</div></div>';}
+function multi(k,items){const a=S[k]||[];return '<div class="chk">'+items.map(it=>'<label class="'+(a.includes(it[0])?'sel':'')+'"><input type="checkbox" data-m="'+k+'" value="'+it[0]+'"'+(a.includes(it[0])?' checked':'')+'>'+esc(it[1])+'</label>').join('')+'</div>';}
+function timeRow(a,b){return '<div class="row">'+selRaw(a,HOURS,'--')+'<span class="u">時 ～</span>'+selRaw(b,HOURS,'--')+'<span class="u">時</span></div>';}
+
+const yearsB=[];for(let y=2010;y>=1940;y--){const e=era(y,12,31);yearsB.push([y,y+'年（'+e.n+(e.y===1?'元':e.y)+'年）']);}
+const yearsJ=[];for(let y=new Date().getFullYear();y>=1970;y--){const e=era(y,12,31);yearsJ.push([y,y+'年（'+e.n+(e.y===1?'元':e.y)+'年）']);}
+const M12=[];for(let i=1;i<=12;i++)M12.push([i,i+'月']);
+const D31=[];for(let i=1;i<=31;i++)D31.push([i,i+'日']);
+
+/* ---------- ステップ ---------- */
+const STEPS=[
+ {t:'現場と送り出し教育',lead:'元請から聞いた内容を入れてください。最初から入っている所はそのままで大丈夫です。',r:()=>
+  '<div class="card">'+txt('site','新規入門予定作業所')+txt('educator','教育実施者（職、氏名）')+'</div>'+
+  '<div class="card">'+txt('okuri_date','教育実施日',{type:'date'})+'<div class="f"><div class="lb">時間</div>'+timeRow('okuri_from','okuri_to')+'</div></div>'+
+  '<p class="note">入力した内容はこのスマホの中だけに保存されます。どこにも送信されません。</p>'+
+  '<button class="btn ghost" id="btnDemo" type="button">見本データを入れて試す</button>'},
+ {t:'あなたのこと',lead:'本人の情報を入れてください。',r:()=>
+  '<div class="card">'+txt('name','氏名',{ph:'例）建設 太郎'})+txt('furigana','ふりがな',{ph:'例）けんせつ たろう'})+
+  '<div class="f"><div class="lb">生年月日</div>'+selRaw('birth_y',yearsB,'年')+'<div class="row" style="margin-top:8px">'+selRaw('birth_m',M12,'月')+selRaw('birth_d',D31,'日')+'</div></div>'+
+  ch('sex','性別',['男','女'])+ch('blood','血液型',['A','B','O','AB','不明'])+'</div>'+
+  '<div class="card">'+txt('shokushu','職種',{ph:'例）型枠大工'})+txt('ichiji','一次請負会社名',{ph:'例）○○工業株式会社'})+txt('chingin','あなたが賃金をもらう会社名又は人',{ph:'例）△△建設株式会社'})+
+  '<div class="f"><div class="lb">経験年数</div><div class="row"><span class="u">建設業で</span><input type="number" inputmode="numeric" data-k="exp_all" value="'+esc(S.exp_all||'')+'"><span class="u">年</span></div><div class="row" style="margin-top:8px"><span class="u">今の職種で</span><input type="number" inputmode="numeric" data-k="exp_cur" value="'+esc(S.exp_cur||'')+'"><span class="u">年</span></div></div>'+
+  '<div class="f"><div class="lb">今の会社に入ったのはいつ</div><div class="row">'+selRaw('join_y',yearsJ,'年')+selRaw('join_m',M12,'月')+'</div></div></div>'},
+ {t:'住所と連絡先',lead:'もしもの時の連絡先も入れてください。',r:()=>
+  '<div class="card">'+txt('addr','現住所',{ph:'例）大阪府堺市堺区○○町1-2-3'})+txt('tel','電話番号',{type:'tel',ph:'例）090-1234-5678'})+'</div>'+
+  '<div class="card">'+txt('emg_name','緊急連絡先（家族等）の氏名',{ph:'例）建設 花子'})+txt('emg_rel','続柄',{ph:'例）妻'})+txt('emg_addr','その人の住所',{hint:'同じなら「同上」',ph:'例）同上'})+txt('emg_tel','その人の電話番号',{type:'tel',ph:'例）090-0000-0000'})+txt('family','家族はどなたがいますか',{ph:'例）妻・子2人'})+'</div>'},
+ {t:'雇用と健康の質問',lead:'あてはまる方を押してください。',r:()=>{
+  let h='<div class="card">'+ch('q_keiyaku','雇用通知書又は雇用契約書は受け取っていますか',['受け取っている','いない'])+
+   ch('q_jigyo','個人事業主・一人親方・会社役員ですか',['はい','いいえ']);
+  if(S.q_jigyo==='はい')h+=ch('q_jigyo_kind','どれにあたりますか',['個人事業主','一人親方','会社役員'])+ch('q_tokubetsu','労災の特別加入をしていますか',['はい','いいえ']);
+  h+=ch('q_kyoiku','今の会社で安全教育（雇入れ時教育含む）を受けた事がありますか',['受けた','受けてない'])+'</div>';
+  h+='<div class="card">'+ch('q_kenshin','直近の健康診断',['受けた','1年以上受けてない']);
+  if(S.q_kenshin==='受けた')h+='<div class="f"><label>いつ頃ですか</label><input type="month" data-k="kenshin_ym" value="'+esc(S.kenshin_ym||'')+'"></div>';
+  h+=ch('q_bp','血圧',['わかる','わからない'],{hint:'高血圧：最高160以上 最低95以上'});
+  if(S.q_bp==='わかる')h+='<div class="f"><div class="row"><span class="u">最高</span><input type="number" inputmode="numeric" data-k="bp_hi" value="'+esc(S.bp_hi||'')+'"><span class="u">最低</span><input type="number" inputmode="numeric" data-k="bp_lo" value="'+esc(S.bp_lo||'')+'"></div></div>';
+  h+=ch('eye','目の状態',['良い','近くがよく見えない','遠くがよく見えない'])+ch('ear','耳の状態',['良い','よく聞こえないことがある'])+
+   ch('memai','めまいがするような事はありますか',['ある','ない'])+ch('taicho','現在の体調',['良い','普通','悪い'])+
+   txt('byomei','最近・現在治療中の病名',{hint:'なければ空欄'})+'</div>';
+  h+='<div class="card">'+ch('kioreki','以前に次の症状（病状）がありましたか',['ある','ない'],{hint:'じん肺症・腰痛・難聴など'});
+  if(S.kioreki==='ある')h+='<div class="f">'+multi('kio_items',KIO1.concat(KIO2).map(v=>[v,v]))+'</div>';
+  h+=ch('kega','過去に怪我（休業４日以上）をしましたか',['した','してない']);
+  if(S.kega==='した')h+=txt('kega_naiyo','どんな怪我ですか',{ph:'例）足の骨折'});
+  return h+'</div>';}},
+ {t:'資格',lead:'持っている資格を全部押してください。',r:()=>{
+  let h='<div class="card">';
+  SHIKAKU.forEach(g=>{h+='<div class="grp">'+g.g+'</div>';const it=[];g.lines.forEach(l=>l.forEach(t=>{if(Array.isArray(t)){let lb=t[1];if(t[0]==='m_futsu')lb='車（普通）';if(t[0]==='m_ogata')lb='車（大型）';it.push([t[0],lb]);}}));h+=multi('shikaku',it);});
+  return h+'</div><div class="card">'+txt('shikaku_other','上の他に持っている資格',{ph:'例）フルハーネス特別教育'})+'</div>';}},
+ {t:'入場日',lead:'現場に入る日がわかっていれば入れてください。わからなければ空欄で大丈夫です（現場で書きます）。',r:()=>
+  '<div class="card">'+txt('nyujo_date','作業所での新規就労者調査・教育日（入場日）',{type:'date'})+'<div class="f"><div class="lb">時間</div>'+timeRow('nyujo_from','nyujo_to')+'</div>'+
+  '<div class="f"><label style="display:flex;gap:8px;align-items:center;font-weight:400;font-size:14px"><input type="checkbox" id="signSame" style="width:20px;height:20px;accent-color:var(--acc)"'+(S.sign_same?' checked':'')+'> 同意欄の日付にも入場日を入れる</label></div></div>'},
+ {t:'できあがり',lead:'内容を確認して保存してください。印刷したら、現場で「氏名（自署）」の欄にサインするだけです。',r:()=>{
+  const miss=missing();
+  return (miss.length?'<div class="warn"><b>まだ入っていない項目</b><br>'+miss.map(esc).join('、')+'<br><span style="font-size:12px">空欄のままでも保存できます。</span></div>':'<div class="okmsg">全部入力できています。</div>')+
+  '<div class="pvwrap"><div class="pvin" id="pvin">'+sheetHTML()+'</div></div>'+
+  '<div id="msg"></div>'+
+  '<button class="btn" id="btnPdf" type="button">PDFで保存</button>'+
+  '<button class="btn sec" id="btnPng" type="button">画像で保存（LINEで送る用）</button>'+
+  '<img id="outimg" alt="完成した調査票">'+
+  '<p class="note" id="imgnote" style="display:none">保存できない時は、上の画像を長押しして保存してください。</p>'+
+  '<p class="note">保存したPDFをコンビニや会社で印刷して、現場に持ってきてください。</p>'+
+  '<button class="btn ghost" id="btnClear" type="button">入力内容を全部消す</button>'+
+  '<div id="clearConfirm" class="warn hide">本当に全部消しますか？<div class="row" style="margin-top:8px"><button class="btn" id="clearYes" type="button" style="margin:0">消す</button><button class="btn sec" id="clearNo" type="button" style="margin:0">やめる</button></div></div>';}}
+];
+
+function missing(){
+  const m=[];const need=[['name','氏名'],['furigana','ふりがな'],['birth_y','生年月日'],['sex','性別'],['blood','血液型'],['addr','現住所'],['tel','電話番号'],['emg_name','緊急連絡先'],['emg_tel','緊急連絡先の電話'],['shokushu','職種'],['ichiji','一次請負会社名'],['chingin','賃金をもらう会社'],['q_keiyaku','雇用契約書'],['q_jigyo','個人事業主等'],['q_kyoiku','安全教育'],['q_kenshin','健康診断'],['q_bp','血圧'],['eye','目の状態'],['ear','耳の状態'],['memai','めまい'],['taicho','体調'],['kioreki','以前の症状'],['kega','過去の怪我']];
+  need.forEach(n=>{if(!S[n[0]])m.push(n[1]);});return m;
+}
+
+/* ---------- 調査票の描画 ---------- */
+function opt(list,sel,sep){sep=sep==null?'・':sep;return list.map(v=>v===sel?'<span class="m">'+esc(v)+'</span>':esc(v)).join(sep);}
+function dateJ(s,pre){const d=pd(s);if(!d)return (pre?'令和':'')+sp('',26)+'年'+sp('',26)+'月'+sp('',26)+'日';const e=era(d.y,d.m,d.d);return e.n+sp(e.y,26)+'年'+sp(d.m,26)+'月'+sp(d.d,26)+'日';}
+function sheetHTML(){
+  const e=S.birth_y?era(+S.birth_y,+S.birth_m||1,+S.birth_d||1):null;
+  const birth=e?(e.n+sp(e.y,22)+'年'+sp(S.birth_m,20)+'月'+sp(S.birth_d,20)+'日（満'+sp(age(),22)+'才）'):(sp('',40)+'年'+sp('',24)+'月'+sp('',24)+'日（満'+sp('',24)+'才）');
+  const je=S.join_y?era(+S.join_y,+S.join_m||12,1):null;
+  const join=je?(je.n+sp(je.y,20)+'年'+sp(S.join_m,20)+'月'):(sp('',40)+'年'+sp('',30)+'月');
+  const emg=[S.emg_name?(S.emg_name+(S.emg_rel?'（'+S.emg_rel+'）':'')):'',S.emg_addr?'住所：'+S.emg_addr:''].filter(Boolean).join('　');
+  const ky=S.kenshin_ym?pd(S.kenshin_ym):null;const kye=ky?era(ky.y,ky.m,1):null;
+  const kenshin=(S.q_kenshin==='受けた'||!S.q_kenshin)?(kye?'<span class="m">'+kye.n+sp(kye.y,18)+'年'+sp(ky.m,18)+'月頃</span>':sp('',30)+'年'+sp('',26)+'月頃')+'・１年以上受けてない':sp('',30)+'年'+sp('',26)+'月頃・<span class="m">１年以上受けてない</span>';
+  const bp=S.q_bp==='わかる'?'最高'+sp(S.bp_hi,34)+'～最低'+sp(S.bp_lo,34)+'・わからない':'最高'+sp('',34)+'～最低'+sp('',34)+'・'+(S.q_bp==='わからない'?'<span class="m">わからない</span>':'わからない');
+  const jig=S.q_jigyo==='はい'?'<span class="m">はい（'+esc(S.q_jigyo_kind||'　　')+'）</span>・いいえ':'はい（　　　　）・'+(S.q_jigyo==='いいえ'?'<span class="m">いいえ</span>':'いいえ');
+  const kio=S.kioreki==='ある';const ki=S.kio_items||[];
+  const kl=a=>a.map(v=>kio&&ki.includes(v)?'<span class="m">'+v+'</span>':v).join('・');
+  const kega=S.kega==='した'?'<span class="m">した</span>（どんな：'+esc(S.kega_naiyo||'')+'）・してない':'した（どんな：'+sp('',150)+'）・'+(S.kega==='してない'?'<span class="m">してない</span>':'してない');
+  const sk=S.shikaku||[];
+  const line=l=>l.map(t=>Array.isArray(t)?(sk.includes(t[0])?'<span class="m">'+t[1]+'</span>':t[1]):t).join('');
+  let skRows='';
+  SHIKAKU.forEach(g=>{g.lines.forEach((l,i)=>{skRows+='<tr>'+(i===0?'<td class="vlab" rowspan="'+g.lines.length+'">'+(g.g==='免許'?'免許':g.g.split('').join('<br>'))+'</td>':'')+'<td class="ln">'+line(l)+'</td></tr>';});});
+  const nd=pd(S.nyujo_date);const nde=nd?era(nd.y,nd.m,nd.d):null;
+  const ny=(nde?nde.n:'令和')+sp(nde?nde.y:'',24)+'年'+sp(nd?nd.m:'',30)+'月'+sp(nd?nd.d:'',30)+'日'+sp(S.nyujo_from,30)+'時～'+sp(S.nyujo_to,30)+'時';
+  const od=pd(S.okuri_date);const ode=od?era(od.y,od.m,od.d):null;
+  const ok=(ode?ode.n:'令和')+sp(ode?ode.y:'',24)+'年'+sp(od?od.m:'',30)+'月'+sp(od?od.d:'',30)+'日'+sp(S.okuri_from,34)+'時～'+sp(S.okuri_to,34)+'時';
+  const signD=(S.sign_same&&nd)?(nde.n+sp(nde.y,24)+'年'+sp(nd.m,26)+'月'+sp(nd.d,26)+'日'):'令和'+sp('',30)+'年'+sp('',30)+'月'+sp('',30)+'日';
+  const tel=s=>'電話　'+esc(s||'');
+  return '<div class="sheet">'+
+  '<div class="ttl"><div><span class="t1">送り出し教育・新規就労者調査票</span><span class="t2">と教育記録</span></div></div>'+
+  '<table class="thick"><colgroup><col style="width:17%"><col style="width:24%"><col></colgroup>'+
+   '<tr><td rowspan="3" class="c b" style="line-height:1.5">送り出し教育<br>実施記録</td><td>新規入門予定作業所</td><td class="c v">'+esc(S.site)+'</td></tr>'+
+   '<tr><td>教育実施者（職、氏名）</td><td class="v">'+esc(S.educator)+'</td></tr>'+
+   '<tr><td>教育実施日</td><td class="v">'+ok+'</td></tr></table>'+
+  '<div class="gap"></div>'+
+  '<table class="thick"><colgroup><col style="width:11%"><col style="width:31%"><col style="width:6%"><col style="width:16%"><col style="width:9%"><col style="width:9%"><col style="width:8%"><col style="width:10%"></colgroup>'+
+   '<tr><td>ふりがな</td><td colspan="2" class="v">'+esc(S.furigana)+'</td><td>一次請負会社名</td><td colspan="4" class="v">'+esc(S.ichiji)+'</td></tr>'+
+   '<tr><td>氏　　名</td><td colspan="2" class="big">'+esc(S.name)+'</td><td class="sm wrap" style="line-height:1.2">あなたが賃金をもらう<br>会社名又は人</td><td colspan="4" class="v">'+esc(S.chingin)+'</td></tr>'+
+   '<tr><td>生年月日</td><td colspan="2" class="v">'+birth+'</td><td class="c">性　別</td><td colspan="2" class="c">'+opt(['男','女'],S.sex,'　　')+'</td><td class="c">血液型</td><td class="c v">'+esc(S.blood?(S.blood==='不明'?'不明':S.blood+'型'):'')+'</td></tr>'+
+   '<tr><td>現住所</td><td colspan="4" class="v">'+esc(S.addr)+'</td><td colspan="3" class="v">'+tel(S.tel)+'</td></tr>'+
+   '<tr><td class="sm" style="font-size:10.5px">緊急連絡先</td><td colspan="4" class="v">'+esc(emg)+'</td><td colspan="3" class="v">'+tel(S.emg_tel)+'</td></tr>'+
+   '<tr><td>(家族等)</td><td class="v">どなたがいますか　'+esc(S.family)+'</td><td rowspan="2" class="c" style="line-height:1.6">経験<br>年数</td><td>建設業で'+sp(S.exp_all,40)+'年</td><td colspan="4">今の会社に入ったのはいつ</td></tr>'+
+   '<tr><td>職　　種</td><td class="v">'+esc(S.shokushu)+'</td><td>現職種で'+sp(S.exp_cur,40)+'年</td><td colspan="4" class="r v">'+join+'</td></tr></table>'+
+  '<div class="sec">入社時諸事項及び健康等の質問　（該当個所を○で囲んで下さい）</div>'+
+  '<table class="q"><colgroup><col style="width:55%"><col></colgroup>'+
+   '<tr><td>雇用通知書又は雇用契約書は受け取っていますか</td><td>'+opt(['受け取っている','いない'],S.q_keiyaku,'　・　')+'</td></tr>'+
+   '<tr><td>個人事業主･一人親方･会社役員ですか</td><td>'+jig+'</td></tr>'+
+   '<tr><td>上記で「はい」と答えた方、労災の特別加入をしていますか</td><td>'+(S.q_jigyo==='はい'?opt(['はい','いいえ'],S.q_tokubetsu,'　・　'):'はい　・　いいえ')+'</td></tr>'+
+   '<tr><td>今の会社で安全教育(雇入れ時教育含む)を受けた事がありますか</td><td>'+opt(['受けた','受けてない'],S.q_kyoiku,'　・　')+'</td></tr>'+
+   '<tr><td>直近の健康診断はいつ受けましたか</td><td>'+kenshin+'</td></tr>'+
+   '<tr><td>血圧はいくつですか（高血圧 最高160以上 最低95以上）</td><td>'+bp+'</td></tr>'+
+   '<tr><td>目の状態</td><td>'+opt(['良い','近くがよく見えない','遠くがよく見えない'],S.eye)+'</td></tr>'+
+   '<tr><td>耳の状態</td><td>'+opt(['良い','よく聞こえないことがある'],S.ear)+'</td></tr>'+
+   '<tr><td>めまいがするような事はありますか</td><td>'+opt(['ある','ない'],S.memai,'　・　')+'</td></tr>'+
+   '<tr><td>現在の体調　　'+opt(['良い','普通','悪い'],S.taicho)+'</td><td>（最近・現在治療中の病名：'+esc(S.byomei||'')+'）</td></tr>'+
+   '<tr><td rowspan="2">以前に右の症状（病状）がありましたか　　'+opt(['ある','ない'],S.kioreki,'・')+'</td><td>'+kl(KIO1)+'</td></tr>'+
+   '<tr><td>'+kl(KIO2)+'</td></tr>'+
+   '<tr><td>過去に怪我(休業４日以上)をしましたか</td><td>'+kega+'</td></tr></table>'+
+  '<div class="sec">資格取得状況　（下記に該当する資格を取得していれば○で囲んで下さい）</div>'+
+  '<table class="sk"><colgroup><col style="width:7%"><col></colgroup>'+skRows+
+   '<tr><td colspan="2">上記以外に取得している資格等があれば記入　　<span class="v">'+esc(S.shikaku_other||'')+'</span></td></tr></table>'+
+  '<div style="margin:3px 0 4px">☆以上までは送り出し教育で協力会社の店社で実施して下さい。（資料は作業所でもらって下さい）</div>'+
+  '<table class="thick" style="width:88%;margin-left:6%"><colgroup><col style="width:38%"><col></colgroup><tr><td class="b">作業所での新規就労者調査・教育日</td><td class="v">'+ny+'</td></tr></table>'+
+  '<div class="sec">新規入場者教育内容　（実施事項の□にﾚ印を記入）</div>'+
+  '<div class="kyoiku">□作業員把握,□方針,□作業環境の周知（工事概要、現場の状況、危険個所・競合作業の説明、警報、非常時対応他）,□基本的遵守事項（禁止行為等の作業上の注意）,□作業手順の確認,□自覚向上,□基本的安全注意事項（安全資料｢新しく現場で働く皆さんのために｣）,□作業固有安全注意事項,□安全目標,□品質目標,□環境目的・目標</div>'+
+  '<div class="dash"><div class="red">1.　この作業所で働くに当たり、本日受けた安全教育の内容を必ず守って安全作業に徹し<br>　　不安全行動は絶対にしないこと。また、ケガをしたらすぐに元請へ報告すること。<br>2.　当社は、この調査票に記載された情報及びその他提出した個人情報を、適正配置<br>　　緊急時対応のために利用します。</div>'+
+   '<div style="margin:6px 0 0 24px">上記1.・2.について同意いたします。</div>'+
+   '<div class="sign"><span>'+signD+'</span><span>氏名（自署）<span class="ul">&nbsp;</span></span></div></div>'+
+  '<div class="foot"><table class="stamp" style="width:auto"><tr><td rowspan="2" class="vlab" style="width:24px;height:74px">確<br>認<br>印</td><td>所　長</td><td>教育実施者</td><td style="border:0;width:16px"></td><td style="width:140px">協力会社責任者確認</td></tr><tr><td></td><td></td><td style="border:0"></td><td></td></tr></table><div style="font-size:13px">サンプル建設株式会社</div></div>'+
+  '</div>';
+}
+
+/* ---------- 画面 ---------- */
+const $=s=>document.querySelector(s);
+function render(){
+  $('#hdrSite').textContent=(S.site||'')+'　元請：サンプル建設株式会社（デモ）';
+  $('#stepbar').innerHTML=STEPS.map((s,i)=>'<i class="'+(i===step?'on':i<step?'done':'')+'"></i>').join('');
+  const st=STEPS[step];
+  $('#main').innerHTML='<h2>'+(step+1)+'. '+st.t+'</h2><p class="lead">'+st.lead+'</p>'+st.r();
+  $('#btnBack').style.visibility=step===0?'hidden':'visible';
+  $('#btnNext').classList.toggle('hide',step===STEPS.length-1);
+  $('#btnBack').style.flex=step===STEPS.length-1?'1':'';
+  bind();
+  if(step===STEPS.length-1)fitPreview();
+}
+function bind(){
+  document.querySelectorAll('[data-k]').forEach(el=>{
+    const ev=el.tagName==='SELECT'||el.type==='date'||el.type==='month'?'change':'input';
+    el.addEventListener(ev,()=>{S[el.dataset.k]=el.value;save();if(el.dataset.k==='site')$('#hdrSite').textContent=S.site+'　元請：サンプル建設株式会社（デモ）';});
+  });
+  document.querySelectorAll('[data-ch]').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.ch;S[k]=S[k]===b.dataset.v?'':b.dataset.v;save();const y=window.scrollY;render();window.scrollTo(0,y);}));
+  document.querySelectorAll('[data-m]').forEach(c=>c.addEventListener('change',()=>{const k=c.dataset.m;const a=new Set(S[k]||[]);c.checked?a.add(c.value):a.delete(c.value);S[k]=[...a];save();c.parentElement.classList.toggle('sel',c.checked);}));
+  const ss=$('#signSame');if(ss)ss.addEventListener('change',()=>{S.sign_same=ss.checked;save();});
+  const dm=$('#btnDemo');if(dm)dm.addEventListener('click',()=>{Object.assign(S,DEMO);save();render();});
+  const bp=$('#btnPdf');if(bp)bp.addEventListener('click',()=>out('pdf'));
+  const bg=$('#btnPng');if(bg)bg.addEventListener('click',()=>out('png'));
+  const bc=$('#btnClear');if(bc)bc.addEventListener('click',()=>$('#clearConfirm').classList.remove('hide'));
+  const cy=$('#clearYes');if(cy)cy.addEventListener('click',()=>{S=Object.assign({},DEF,{shikaku:[],kio_items:[]});save();step=0;render();window.scrollTo(0,0);});
+  const cn=$('#clearNo');if(cn)cn.addEventListener('click',()=>$('#clearConfirm').classList.add('hide'));
+}
+function fitPreview(){const w=$('.pvwrap');const p=$('#pvin');if(!w||!p)return;const sc=(w.clientWidth-16)/794;p.style.transform='scale('+sc+')';p.style.width='794px';requestAnimationFrame(()=>{p.parentElement.style.height=(p.firstElementChild.offsetHeight*sc+16)+'px';});}
+window.addEventListener('resize',()=>{if(step===STEPS.length-1)fitPreview();});
+$('#btnNext').addEventListener('click',()=>{if(step<STEPS.length-1){step++;render();window.scrollTo(0,0);}});
+$('#btnBack').addEventListener('click',()=>{if(step>0){step--;render();window.scrollTo(0,0);}});
+
+/* ---------- 保存 ---------- */
+function msg(h,cls){const m=$('#msg');if(m)m.innerHTML=h?'<div class="'+cls+'">'+h+'</div>':'';}
+async function makeCanvas(){
+  const cap=$('#cap');cap.innerHTML=sheetHTML();
+  try{await document.fonts.ready;}catch(e){}
+  const c=await html2canvas(cap.firstElementChild,{scale:2.5,backgroundColor:'#ffffff',logging:false,useCORS:true});
+  cap.innerHTML='';return c;
+}
+let busy=false;
+async function out(kind){
+  if(busy)return;busy=true;
+  const btn=kind==='pdf'?$('#btnPdf'):$('#btnPng');const lbl=btn.textContent;btn.disabled=true;btn.textContent='作成中…';msg('');
+  try{
+    if(typeof html2canvas==='undefined'||(kind==='pdf'&&!(window.jspdf&&window.jspdf.jsPDF)))throw new Error('lib');
+    const c=await makeCanvas();
+    const img=$('#outimg');img.src=c.toDataURL('image/jpeg',0.92);img.style.display='block';$('#imgnote').style.display='block';
+    let blob,fn;const base='新規入場者調査票_'+((S.name||'未記入').replace(/[\\/:*?"<>|\s]/g,''));
+    if(kind==='pdf'){
+      const pdf=new window.jspdf.jsPDF({orientation:'p',unit:'mm',format:'a4'});
+      let w=210,h=210*c.height/c.width;if(h>297){h=297;w=297*c.width/c.height;}
+      pdf.addImage(c.toDataURL('image/jpeg',0.92),'JPEG',(210-w)/2,0,w,h);
+      blob=pdf.output('blob');fn=base+'.pdf';
+    }else{
+      blob=await new Promise(r=>c.toBlob(r,'image/png'));fn=base+'.png';
+    }
+    await deliver(blob,fn);
+  }catch(e){
+    if(e&&e.message==='lib')msg('部品の読み込みに失敗しました。電波の良い所でページを開き直してください。','errmsg');
+    else msg('保存できませんでした。下の画像を長押しして保存してください。','errmsg');
+  }finally{btn.disabled=false;btn.textContent=lbl;busy=false;}
+}
+async function deliver(blob,fn){
+  let dl=null;
+  if(window.claude&&typeof window.claude.use==='function'){try{dl=await window.claude.use('downloads');}catch(e){dl=null;}}
+  if(dl){
+    try{await dl.save({filename:fn,data:blob});msg('保存しました：'+esc(fn),'okmsg');}
+    catch(e){if(e&&e.code==='declined')msg('保存をやめました。','warn');else msg('この画面では保存できませんでした。下の画像を長押しして保存してください。','errmsg');}
+    return;
+  }
+  try{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fn;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},4000);msg('保存しました：'+esc(fn)+'<br><span style="font-size:12px">保存されない時は、下の画像を長押しして保存してください。</span>','okmsg');}
+  catch(e){msg('保存できませんでした。下の画像を長押しして保存してください。','errmsg');}
+}
+
+const DEMO={okuri_date:'2026-11-10',okuri_from:'8',okuri_to:'10',name:'建設　太郎',furigana:'けんせつ　たろう',birth_y:'1985',birth_m:'5',birth_d:'15',sex:'男',blood:'A',shokushu:'型枠大工',ichiji:'○○工業株式会社',chingin:'△△建設株式会社',exp_all:'15',exp_cur:'12',join_y:'2016',join_m:'4',addr:'大阪府堺市堺区○○町1丁目2-3',tel:'072-123-4567',emg_name:'建設　花子',emg_rel:'妻',emg_addr:'同上',emg_tel:'090-1234-5678',family:'妻・子2人',q_keiyaku:'受け取っている',q_jigyo:'いいえ',q_kyoiku:'受けた',q_kenshin:'受けた',kenshin_ym:'2026-04',q_bp:'わかる',bp_hi:'128',bp_lo:'82',eye:'良い',ear:'良い',memai:'ない',taicho:'良い',kioreki:'ない',kio_items:[],kega:'してない',shikaku:['m_shokucho','g_katawaku','g_ashiba','g_tamakake'],shikaku_other:'フルハーネス特別教育・型枠施工技能士(2級)',nyujo_date:'2026-11-17',nyujo_from:'8',nyujo_to:'9',sign_same:true};
+
+render();
+})();
+</script>
+</body>
+</html>

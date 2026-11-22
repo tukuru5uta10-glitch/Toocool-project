@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>29/6_DESIGN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Noto+Sans+JP:wght@200;300;400;500&family=Zen+Old+Mincho:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* 写真の白壁と床のオーク色。余白を大きく取り、文字は小さく静かに置く */
+  --wall:#f5f2ec;
+  --ink:#24201b;
+  --mute:#857c70;
+  --line:#ddd6ca;
+  --oak:#9a6a3c;
+  --latin:'Jost','Helvetica Neue',sans-serif;
+  --jp:'Noto Sans JP','Hiragino Sans',sans-serif;
+  --mincho:'Zen Old Mincho','Hiragino Mincho ProN',serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{display:flex;flex-direction:column;min-height:100%;background:#2b2a28;color:var(--ink);font-family:var(--jp);font-weight:300;-webkit-text-size-adjust:100%}
+a{color:inherit;text-decoration:none}
+a:focus-visible{outline:1px solid var(--oak);outline-offset:4px}
+
+header{position:absolute;top:0;left:0;right:0;z-index:3;display:flex;justify-content:space-between;align-items:center;padding:26px clamp(18px,4vw,48px)}
+.logo{font-family:var(--latin);font-weight:500;font-size:17px;letter-spacing:.22em;color:#fff;text-shadow:0 1px 12px rgba(0,0,0,.25)}
+nav{display:flex;gap:clamp(16px,2.6vw,34px);font-family:var(--latin);font-weight:300;font-size:12.5px;letter-spacing:.22em;color:#fff;text-shadow:0 1px 12px rgba(0,0,0,.25)}
+nav a{display:inline-block;opacity:.92;transform-origin:50% 60%;text-shadow:0 1px 12px rgba(0,0,0,.25);transition:transform .35s cubic-bezier(.2,.7,.2,1),text-shadow .35s ease,opacity .35s ease}
+
+@media (prefers-reduced-motion:reduce){nav a{transition:none}nav a:hover,nav a:focus-visible{transform:none}}
+nav a.ct{letter-spacing:.14em;margin-right:-.08em;position:relative}
+
+.tx{display:inline-block;transition:opacity .3s ease,transform .35s ease}
+
+.lm{position:absolute;left:50%;top:50%;color:#06C755;opacity:0;transform:translate(-50%,-30%) scale(.8);transition:opacity .35s ease .05s,transform .45s cubic-bezier(.2,.8,.2,1.2) .05s;filter:drop-shadow(0 6px 6px rgba(0,0,0,.5)) drop-shadow(0 10px 16px rgba(0,0,0,.3));pointer-events:none}
+.lm svg{display:block}
+
+@media (hover:hover){nav a:hover,nav a:focus-visible{opacity:1;transform:translateY(-4px) scale(1.12);text-shadow:0 7px 6px rgba(0,0,0,.85),0 10px 18px rgba(0,0,0,.6)}nav a.ct:hover,nav a.ct:focus-visible{transform:none;text-shadow:0 1px 12px rgba(0,0,0,.25)}nav a.ct:hover .tx,nav a.ct:focus-visible .tx{opacity:0;transform:translateY(-6px)}nav a.ct:hover .lm,nav a.ct:focus-visible .lm{opacity:1;transform:translate(-50%,-50%) scale(1);animation:lmfloat 2.4s ease-in-out .5s infinite}}
+@keyframes lmfloat{0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-50%,calc(-50% - 4px))}}
+@media (prefers-reduced-motion:reduce){.lm,.tx{transition:opacity .2s}nav a.ct:hover .lm{animation:none;transform:translate(-50%,-50%)}nav a.ct:hover .tx{transform:none}}
+nav a.rf{letter-spacing:.17em;margin-right:-.05em}
+
+@media (max-width:560px){header{flex-wrap:wrap;row-gap:4px}nav{width:100%;justify-content:space-between;gap:0;font-size:11.5px}nav a{padding:12px 0}}
+
+.hero{position:relative;flex:1 0 auto;min-height:420px;overflow:hidden;background:#3a3028}
+.hero .lead{position:absolute;left:clamp(18px,4vw,48px);bottom:clamp(22px,4vw,40px);z-index:2;margin:0;color:#fff;font-size:12px;font-weight:200;line-height:2.1;letter-spacing:.03em;text-shadow:0 1px 10px rgba(0,0,0,.45)}
+@media (max-width:560px){.hero .lead{font-size:10.5px;right:18px}}
+@media (max-width:760px) and (orientation:portrait){.hero .lead{bottom:14px}}
+.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 55%}
+@media (max-width:760px) and (max-aspect-ratio:14/25){.hero img{object-position:50% 8%}}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.28) 0%,rgba(0,0,0,0) 22%,rgba(0,0,0,0) 70%,rgba(0,0,0,.18) 100%)}
+.hero .scroll{position:absolute;left:clamp(18px,4vw,48px);bottom:22px;z-index:2;font-family:var(--latin);font-size:11px;letter-spacing:.24em;color:rgba(255,255,255,.85)}
+
+
+.svc{max-width:1080px;margin:0 auto;padding:0 clamp(18px,4vw,48px) clamp(80px,10vw,130px);display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line)}
+.svc a{display:block;padding:34px 28px 36px 0;border-right:1px solid var(--line);margin-right:28px;transition:color .2s}
+.svc a:last-child{border-right:0;margin-right:0}
+.svc .n{font-family:var(--latin);font-size:11px;letter-spacing:.24em;color:var(--mute)}
+.svc .en{display:block;font-family:var(--latin);font-weight:400;font-size:26px;letter-spacing:.08em;margin:18px 0 8px}
+.svc .jp{display:block;font-size:13.5px;line-height:2;color:var(--mute);letter-spacing:.05em}
+.svc .ar{display:inline-block;margin-top:18px;font-family:var(--latin);font-size:11px;letter-spacing:.2em;border-bottom:1px solid var(--ink);padding-bottom:3px}
+.svc a:hover .en{color:var(--oak)}
+.svc a:hover .ar{color:var(--oak);border-color:var(--oak)}
+@media (max-width:760px){.svc{grid-template-columns:1fr}.svc a{border-right:0;margin-right:0;border-bottom:1px solid var(--line);padding:28px 0}}
+@media (prefers-reduced-motion:reduce){.svc a{transition:none}}
+
+footer{background:#2b2a28;color:#77726a;padding:20px clamp(18px,4vw,48px) 22px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
+.flogo{font-family:var(--latin);font-weight:300;font-size:14px;letter-spacing:.3em;color:#8a7350}
+.fr{text-align:right;display:grid;gap:4px}
+.fr span{font-family:var(--latin);font-size:10.5px;letter-spacing:.14em}
+.fr small{font-size:9px;letter-spacing:.08em;color:#5e5a54;line-height:1.6}
+@media (max-width:560px){
+  footer{padding:6px 18px 8px;gap:0;border-top:1px solid #34332f}
+  .flogo{display:none}
+  .fr{text-align:left;gap:1px}
+  .fr span{font-size:6.5px;letter-spacing:.12em}
+  .fr small{font-size:6px;letter-spacing:.03em;line-height:1.45;color:#55514b}
+}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="index.html">29/6_DESIGN</a>
+  <nav aria-label="メニュー">
+    <a class="rf" href="reform.html">REFORM</a>
+    <a href="app.html">APP</a>
+    <a href="web.html">WEB</a>
+    <a class="ct" href="contact.html"><span class="tx">CONTACT</span><span class="lm" aria-hidden="true"><svg viewBox="0 0 48 44" width="34" height="31"><path d="M24 3C12.4 3 3 10.6 3 20c0 8.4 7.5 15.4 17.6 16.8.7.2 1.6.5 1.8 1.1.2.5.1 1.3.1 1.8l-.3 1.8c-.1.5-.4 2 1.8 1.1 2.2-.9 11.8-7 16.1-11.9C43.3 27.4 45 23.9 45 20 45 10.6 35.6 3 24 3z" fill="#06C755"/><text x="24" y="24.5" text-anchor="middle" font-family="Jost,Helvetica,Arial,sans-serif" font-size="11" font-weight="600" letter-spacing=".5" fill="#fff">LINE</text></svg></span></a>
+  </nav>
+</header>
+
+<div class="hero">
+  <picture>
+    <source media="(max-width:760px) and (max-aspect-ratio:14/25)" srcset="img/hero-tall.jpg">
+    <img src="img/hero.jpg" srcset="img/hero-s.jpg 1200w, img/hero.jpg 2400w" sizes="100vw" alt="大きな格子窓から紅葉の庭が見える、オークの床と白い塗り壁のリビングダイニング">
+  </picture>
+  <p class="lead">29/6_DESIGN は、住まいのリフォームと、<br>つくり手の仕事を支えるアプリやホームページをつくっています。</p>
+</div>
+<footer>
+  <span class="flogo">29/6_DESIGN</span>
+  <div class="fr">
+    <span>© 2025 29/6_DESIGN. All rights reserved.</span>
+    <small>対応エリア：堺市（堺区・北区・西区・中区・東区・美原区・南区）和泉市・高石市・大阪狭山市・河内長野市・松原市・羽曳野市・富田林市ほか大阪全域</small>
+  </div>
+</footer>
+<script>
+/* スマホなど縦長の画面では、窓（写真の左から39.5%〜）を最優先で全部入れ、そのうえで鹿の飾り（〜69.3%）が入る位置に写真を寄せる */
+(function(){
+  var img=document.querySelector('.hero img'),RIGHT=0.693,PAD=0.008,WINL=0.395,AR=2528/1408;
+  function fit(){
+    var w=img.clientWidth,h=img.clientHeight;if(!w||!h)return;
+    if(/hero-tall/.test(img.currentSrc||'')){img.style.objectPosition='';return;}
+    if(w/h>=AR){img.style.objectPosition='';return;}
+    var vis=(w/h)/AR,x0=Math.max(0.5*(1-vis),RIGHT+PAD-vis);x0=Math.min(x0,WINL-PAD,1-vis);
+    img.style.objectPosition=(x0/(1-vis)*100).toFixed(2)+'% 55%';
+  }
+  fit();window.addEventListener('resize',fit);img.addEventListener('load',fit);
+})();
+</script>
+</body>
+</html>
